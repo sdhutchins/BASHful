@@ -1,38 +1,34 @@
 #!/bin/bash
 # ------------------------------------------------------------------
-#
-# compbio-project: creates directory structure for computational biology projects
-#
-# usage: compbio-project DIRNAME
+# [Shaurita Hutchins] compbio-project
+#          This script creates directory structure for computational biology projects
+#          Usage: compbio-project [DIRNAME]
 #
 
 DIR=$1
 
 if [ "$#" == "0" ]; then
-	echo "ERROR: You must specify a directory name."
+	echo "Error: You must specify a directory name."
 	echo
-	echo "USAGE: compbio-project DIRNAME"
+	echo "Usage: compbio-project [DIRNAME]"
 
 elif [ ! -d "${DIR}" ]; then
 	if [ "${DIR}" == "-h" ]; then
-	        echo "HELP"
-	        echo
-		echo "USAGE: compbio-project DIRNAME"
+	    	echo "Usage: compbio-project [DIRNAME]"
 		exit 0
 	else
 		echo "Creating ${DIR} directory..."
-		echo
 		mkdir -p ${DIR} \
 			 ${DIR}/data \
 			 ${DIR}/docs/paper \
 			 ${DIR}/docs/instructions \
 			 ${DIR}/results \
 			 ${DIR}/src \
-			 ${DIR}/bin
-		echo "${DIR} directory created."
+			 ${DIR}/bin 
+		echo "Successfully created ${DIR} directory."
 		echo
 		ls -lah ${DIR}
 	fi
 else
 	echo "${DIR} already exists."
-fi
+fi 
