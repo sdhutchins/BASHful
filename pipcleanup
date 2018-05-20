@@ -3,8 +3,12 @@
 # [Shaurita Hutchins] pipcleanup
 #          This cleans up or deletes the pip cache.
 
-# Cleanup your pip cache
+DIR=~/.cache/pip/
 
-rm -r ~/.cache/pip/*
-
-echo "INFO: Pip cache has been cleaned."
+if [ -d "$DIR" ]; then
+	echo "Info: Local pip cache does not exist."
+else
+	echo "Info: Local pip cache exists."
+	rm -rf "$DIR"
+	echo "Successfully deleted local pip cache."
+fi
