@@ -30,5 +30,5 @@ elif [ ! -d "${DIR}" ]; then
 		ls -lah ${DIR}
 	fi
 else
-	echo "${DIR} already exists."
+	echo "Error: ${DIR} already exists."
 fi 
