@@ -1,9 +1,8 @@
-<center>
-<img src="https://i.imgur.com/nNLCNPp.png" height="40">
+<img src="https://i.imgur.com/nNLCNPp.png" height="100" align="center">
 
-<h1> BASHful</h1>
+# BASHful
 
-These scripts don't say much, but they get the job done!</center>
+These scripts don't say much, but they get the job done!
 
 ## Installation
 
