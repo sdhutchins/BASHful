@@ -7,14 +7,16 @@
 # A function that uses wget to download the scripts
 download_scripts()
 {
+
+URL=https://raw.githubusercontent.com/sdhutchins/BASHful/master/bin
 echo "Downloading all scripts..."
-wget -O ~/bin/compbio-project https://raw.githubusercontent.com/sdhutchins/BASHful/master/bin/compbio-project
-wget -O ~/bin/pipcleanup https://raw.githubusercontent.com/sdhutchins/BASHful/master/bin/pipcleanup
-wget -O ~/bin/install_paml.sh https://raw.githubusercontent.com/sdhutchins/BASHful/master/bin/install_paml.sh
-wget -O ~/bin/install_pal2nal.sh https://raw.githubusercontent.com/sdhutchins/BASHful/master/bin/install_pal2nal.sh
-wget -O ~/bin/install_anaconda.sh https://raw.githubusercontent.com/sdhutchins/BASHful/master/bin/install_anaconda.sh
-wget -O ~/bin/install_ncbiblast.sh https://raw.githubusercontent.com/sdhutchins/BASHful/master/bin/install_ncbiblast.sh
-wget -O ~/bin/install_clustalo.sh https://raw.githubusercontent.com/sdhutchins/BASHful/master/bin/install_clustalo.sh
+wget -O ~/bin/compbio-project $URL/compbio-project
+wget -O ~/bin/pipcleanup $URL/pipcleanup
+wget -O ~/bin/install_paml.sh $URL/install_paml.sh
+wget -O ~/bin/install_pal2nal.sh $URL/install_pal2nal.sh
+wget -O ~/bin/install_anaconda.sh $URL/install_anaconda.sh
+wget -O ~/bin/install_ncbiblast.sh $URL/install_ncbiblast.sh
+wget -O ~/bin/install_clustalo.sh $URL/install_clustalo.sh
 echo "Scripts have finished downloading."
 }
 
