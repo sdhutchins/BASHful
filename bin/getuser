@@ -1,0 +1,19 @@
+#!/bin/bash
+# ------------------------------------------------------------------
+# [Shaurita Hutchins] getuser
+#          This gets the location of the user's home directory and 
+#		   the full name of the user.
+#		   Usage: getuser [$USERNAME]
+
+USER="$1"
+
+if [ -n $USER ]; then 	# -n tests to see if the argument is non empty
+	USERINFO=$(getent passwd | grep $USER);
+	IFS=: read -r -a array <<< "$USERINFO"; 
+	echo "Name: ${array[4]}";
+	echo "Home path: ${array[5]}";
+else
+	echo "Error: You must specify a username (e.g. r2290)"
+	echo
+	echo "Usage: getuser [USERNAME]"
+fi
