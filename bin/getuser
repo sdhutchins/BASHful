@@ -7,13 +7,18 @@
 
 USER="$1"
 
-if [ -n $USER ]; then 	# -n tests to see if the argument is non empty
-	USERINFO=$(getent passwd | grep $USER);
-	IFS=: read -r -a array <<< "$USERINFO"; 
-	echo "Name: ${array[4]}";
-	echo "Home path: ${array[5]}";
-else
+if [ "$#" == "0" ]; then
 	echo "Error: You must specify a username (e.g. r2290)"
 	echo
 	echo "Usage: getuser [USERNAME]"
-fi
+elif [ ! -d "${DIR}" ]; then
+	if [ "${USER}" == "-h" ]; then
+	    	echo "Usage: getuser [USERNAME]"
+		exit 0
+	else
+      	USERINFO=$(getent passwd | grep $USER);
+      	IFS=: read -r -a array <<< "$USERINFO"; 
+      	echo "Name: ${array[4]}";
+      	echo "Home path: ${array[5]}";
+	fi
+fi 
