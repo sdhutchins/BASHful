@@ -1,0 +1,66 @@
+#!/bin/bash
+# ------------------------------------------------------------------
+# [Shaurita Hutchins] cgds-box-project
+#          This script creates directory structure for CGDS box folders.
+#          Usage: cgds-box-project [PROJECT_NAME]
+#
+
+# Function to create the project structure
+create_structure() {
+    local base_dir="$1"
+
+    # Create the main file if it doesn't exist
+    if [ ! -f "$base_dir/$PROJECT_NAME.boxnote" ]; then
+        touch "$base_dir/$PROJECT_NAME.boxnote"
+    fi
+
+    # Create the subdirectories without overwriting existing ones
+    mkdir -p "$base_dir/analysis"
+    mkdir -p "$base_dir/archive"
+    mkdir -p "$base_dir/data/external"
+    mkdir -p "$base_dir/data/metadata"
+    mkdir -p "$base_dir/data/raw"
+    mkdir -p "$base_dir/docs/abstracts"
+    mkdir -p "$base_dir/docs/manuscripts"
+    mkdir -p "$base_dir/docs/meetings"
+    mkdir -p "$base_dir/docs/presentations"
+    mkdir -p "$base_dir/docs/proposals"
+    mkdir -p "$base_dir/docs/references"
+    mkdir -p "$base_dir/docs/reviews"
+
+    # Create the specific file in the docs folder if it doesn't exist
+    if [ ! -f "$base_dir/docs/methodologies.docx" ]; then
+        touch "$base_dir/docs/methodologies.docx"
+    fi
+
+    echo "Project structure created in '$base_dir'."
+}
+
+# Check if the project name is provided as an argument
+if [ -z "$1" ]; then
+    # No project name provided; use the current directory name
+    echo "No project name provided. Structure will be created in the current directory: '$PWD'."
+    
+    # Prompt for confirmation
+    read -p "Do you want to proceed with creating the structure in '$PWD'? (y/n): " confirmation
+    if [[ ! "$confirmation" =~ ^[Yy]$ ]]; then
+        echo "Exiting without creating project structure."
+        exit 1
+    fi
+
+    # Create the structure in the current directory
+    create_structure "."
+else
+    # Set the project name from the first argument
+    PROJECT_NAME="$1"
+
+    # Create the top-level project directory if it doesn't exist
+    if [ ! -d "$PROJECT_NAME" ]; then
+        mkdir -p "$PROJECT_NAME"
+    fi
+
+    echo "Creating project structure for: '$PROJECT_NAME' in the '$PROJECT_NAME' directory."
+
+    # Create the structure inside the specified project directory
+    create_structure "$PROJECT_NAME"
+fi
