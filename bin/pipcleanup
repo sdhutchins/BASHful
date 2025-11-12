@@ -2,6 +2,7 @@
 # ------------------------------------------------------------------
 # [Shaurita Hutchins] pipcleanup
 #          This cleans up or deletes the pip cache.
+#
 
 DIR=~/.cache/pip/
 

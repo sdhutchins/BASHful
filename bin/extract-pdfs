@@ -1,0 +1,14 @@
+#!/bin/bash
+# ------------------------------------------------------------------
+# [Shaurita D. Hutchins] extract-pdfs
+#          This script extracts all .pdf files from a directory and its subdirectories
+#          and copies them into a folder named 'all_pdfs'.
+#          Usage: extract-pdfs
+
+# Create the destination folder
+mkdir -p all_pdfs
+
+# Find and copy all .pdf files from subdirectories
+find . -type f -iname "*.pdf" ! -path "./all_pdfs/*" -exec cp "{}" all_pdfs/ \;
+
+echo "All PDF files copied to ./all_pdfs"

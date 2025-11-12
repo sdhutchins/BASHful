@@ -1,0 +1,33 @@
+#!/bin/bash
+# ------------------------------------------------------------------
+# [Shaurita Hutchins] cbproj
+#          This script creates directory structure for computational biology projects
+#          Usage: cbproj [DIRNAME]
+#
+#  Folder layout:
+#    config/     - Environment files, parameters, and manifests
+#    data/       - All datasets (raw inputs and processed outputs)
+#    docs/       - Notes, papers, and supporting documentation
+#    notebooks/  - Jupyter or R notebooks for analysis and QC
+#    results/    - Final figures, tables, and reports
+#    src/        - Main scripts, code, and workflows
+#    bin/        - Helper scripts and small executables
+#
+
+DIR=$1
+
+if [ -z "$DIR" ]; then
+    echo "Error: You must specify a directory name."
+    echo "Usage: cbproj [DIRNAME]"
+    exit 1
+fi
+
+if [ -d "$DIR" ]; then
+    echo "Error: ${DIR} already exists."
+    exit 1
+fi
+
+echo "Creating ${DIR} project directory..."
+mkdir -p ${DIR}/{config,data/{raw,processed},docs,notebooks,results,src,bin}
+echo "Successfully created ${DIR}."
+tree -d ${DIR}

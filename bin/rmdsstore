@@ -1,0 +1,30 @@
+#!/bin/bash
+# ------------------------------------------------------------------
+# [Shaurita Hutchins] rmdsstore
+#          This script deletes .DS_Store files in a directory and its subdirectories.
+#          Usage: rmdsstore
+
+# Path to the directory
+TARGET_DIR="/Users/shutchens/Documents/Git-Repos"
+
+# Find .DS_Store files in the specified directory and all subdirectories
+echo "Searching for .DS_Store files in $TARGET_DIR and its subdirectories..."
+FILES=$(find "$TARGET_DIR" -name '.DS_Store' -type f)
+
+if [ -z "$FILES" ]; then
+    echo "No .DS_Store files found."
+    exit 0
+fi
+
+echo "The following .DS_Store files were found:"
+echo "$FILES"
+
+# Ask for confirmation before deletion
+read -p "Do you want to delete these files? [y/n]" CONFIRM
+
+if [[ $CONFIRM =~ ^[Yy]$ ]]; then
+    echo "$FILES" | xargs rm
+    echo "All .DS_Store files have been removed."
+else
+    echo "File deletion cancelled."
+fi

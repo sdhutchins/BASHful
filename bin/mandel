@@ -1,0 +1,32 @@
+#!/bin/bash
+# ------------------------------------------------------------------
+# [Shaurita Hutchins] mandel
+#          This script manually deletes files by extension in a directory.
+#          Usage: mandel [DIRECTORY] [EXTENSION] 
+
+# Function to list files by extension
+list_files() {
+    find "$1" -type f -name "*.$2"
+}
+
+# Function to delete files by extension
+delete_files() {
+    find "$1" -type f -name "*.$2" -exec rm -f {} \;
+}
+
+# Ask for directory and extension
+read -p "Enter the directory path: " dir
+read -p "Enter the file extension: " ext
+
+# List files
+echo "Listing files with extension .$ext in directory $dir:"
+list_files "$dir" "$ext"
+
+# Confirm deletion
+read -p "Do you want to delete these files? (yes/no): " confirm
+if [ "$confirm" == "yes" ]; then
+    delete_files "$dir" "$ext"
+    echo "Files deleted."
+else
+    echo "Files were not deleted."
+fi
