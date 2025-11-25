@@ -2,28 +2,41 @@
 # ------------------------------------------------------------------
 # [Shaurita Hutchins] rmdsstore
 #          This script deletes .DS_Store files in a directory and its subdirectories.
-#          Usage: rmdsstore
+#          Usage: rmdsstore [DIRECTORY]
+# ------------------------------------------------------------------
 
-# Path to the directory
-TARGET_DIR="/Users/shutchens/Documents/Git-Repos"
+set -euo pipefail
 
-# Find .DS_Store files in the specified directory and all subdirectories
-echo "Searching for .DS_Store files in $TARGET_DIR and its subdirectories..."
-FILES=$(find "$TARGET_DIR" -name '.DS_Store' -type f)
+# Default to current directory if no argument is provided
+TARGET_DIR="${1:-.}"
 
-if [ -z "$FILES" ]; then
+# Check if directory exists
+if [[ ! -d "$TARGET_DIR" ]]; then
+    echo "Error: Directory '$TARGET_DIR' does not exist."
+    exit 1
+fi
+
+echo "Searching for .DS_Store files in '$TARGET_DIR' and its subdirectories..."
+
+# Find .DS_Store files
+# Storing in an array is safer for filenames with spaces, though .DS_Store is fixed name.
+# Using mapfile to handle potentially many files.
+mapfile -t FILES < <(find "$TARGET_DIR" -name '.DS_Store' -type f)
+
+if [[ ${#FILES[@]} -eq 0 ]]; then
     echo "No .DS_Store files found."
     exit 0
 fi
 
 echo "The following .DS_Store files were found:"
-echo "$FILES"
+printf '%s\n' "${FILES[@]}"
 
 # Ask for confirmation before deletion
-read -p "Do you want to delete these files? [y/n]" CONFIRM
+read -r -p "Do you want to delete these files? [y/N] " CONFIRM
 
-if [[ $CONFIRM =~ ^[Yy]$ ]]; then
-    echo "$FILES" | xargs rm
+if [[ "$CONFIRM" =~ ^[Yy]$ ]]; then
+    # Delete files properly handling spaces
+    printf '%s\n' "${FILES[@]}" | xargs -I {} rm "{}"
     echo "All .DS_Store files have been removed."
 else
     echo "File deletion cancelled."

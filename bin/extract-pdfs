@@ -3,12 +3,30 @@
 # [Shaurita D. Hutchins] extract-pdfs
 #          This script extracts all .pdf files from a directory and its subdirectories
 #          and copies them into a folder named 'all_pdfs'.
-#          Usage: extract-pdfs
+#          Usage: extract-pdfs [TARGET_DIR]
+# ------------------------------------------------------------------
 
-# Create the destination folder
-mkdir -p all_pdfs
+set -euo pipefail
 
-# Find and copy all .pdf files from subdirectories
-find . -type f -iname "*.pdf" ! -path "./all_pdfs/*" -exec cp "{}" all_pdfs/ \;
+# Use current directory if no argument provided
+SEARCH_DIR="${1:-.}"
+DEST_DIR="all_pdfs"
 
-echo "All PDF files copied to ./all_pdfs"
+# Check if search directory exists
+if [[ ! -d "$SEARCH_DIR" ]]; then
+    echo "Error: Directory '$SEARCH_DIR' not found."
+    exit 1
+fi
+
+# Create destination folder safely
+mkdir -p "$DEST_DIR"
+
+echo "Searching for PDFs in '$SEARCH_DIR'..."
+
+# Find and copy .pdf files, excluding the destination folder itself to avoid infinite loops/duplication
+# Using -exec cp is efficient. Added -v for verbose output (optional, can remove if too noisy)
+find "$SEARCH_DIR" -type f -iname "*.pdf" \
+    ! -path "./$DEST_DIR/*" \
+    -exec cp -v "{}" "$DEST_DIR/" \;
+
+echo "All PDF files copied to ./$DEST_DIR"

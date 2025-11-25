@@ -12,22 +12,40 @@
 #    results/    - Final figures, tables, and reports
 #    src/        - Main scripts, code, and workflows
 #    bin/        - Helper scripts and small executables
-#
+# ------------------------------------------------------------------
 
-DIR=$1
+set -euo pipefail
 
-if [ -z "$DIR" ]; then
+# Check if tree is installed
+if ! command -v tree &> /dev/null; then
+    echo "Warning: 'tree' is not installed. The directory structure will be created, but not visualized."
+fi
+
+# Check if an argument is provided
+if [[ $# -eq 0 ]]; then
     echo "Error: You must specify a directory name."
-    echo "Usage: cbproj [DIRNAME]"
+    echo "Usage: $(basename "$0") [DIRNAME]"
     exit 1
 fi
 
-if [ -d "$DIR" ]; then
-    echo "Error: ${DIR} already exists."
+DIR="$1"
+
+# Check if directory already exists
+if [[ -d "$DIR" ]]; then
+    echo "Error: Directory '$DIR' already exists."
     exit 1
 fi
 
-echo "Creating ${DIR} project directory..."
-mkdir -p ${DIR}/{config,data/{raw,processed},docs,notebooks,results,src,bin}
-echo "Successfully created ${DIR}."
-tree -d ${DIR}
+echo "Creating '$DIR' project directory..."
+
+# Create directory structure safely
+# Brace expansion happens before variable expansion, so we need to construct paths explicitly or use eval (risky)
+# A cleaner approach is multiple mkdir calls or array expansion
+mkdir -p "$DIR"/{config,data/{raw,processed},docs,notebooks,results,src,bin}
+
+echo "Successfully created '$DIR'."
+
+# Display structure if tree is available
+if command -v tree &> /dev/null; then
+    tree -d "$DIR"
+fi
