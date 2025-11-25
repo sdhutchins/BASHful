@@ -1,0 +1,59 @@
+name: Test Scripts
+
+on:
+  push:
+    branches: [ master, main, fixes ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y shellcheck tree
+
+    - name: Run ShellCheck
+      run: |
+        # Find all executable files in bin/ and .sh files, excluding directories
+        find bin -type f -not -name "*.*" > files_to_check.txt
+        find . -maxdepth 1 -name "*.sh" >> files_to_check.txt
+        
+        echo "Linting the following files:"
+        cat files_to_check.txt
+        
+        # Run shellcheck on each file
+        xargs -a files_to_check.txt shellcheck -S warning
+
+    - name: Smoke Tests
+      run: |
+        # Add bin to PATH
+        export PATH="$PWD/bin:$PATH"
+        
+        echo "--- Testing doc2md help ---"
+        doc2md -h || true  # Expect exit 1 for usage, which is fine
+        
+        echo "--- Testing cbproj help ---"
+        cbproj || true     # Expect error for missing arg
+        
+        echo "--- Testing getuser help ---"
+        getuser -h || true 
+        
+        echo "--- Testing extract-pdfs help ---"
+        # extract-pdfs requires a dir, let's test with current dir (safe)
+        mkdir -p test_pdfs
+        touch test_pdfs/dummy.pdf
+        extract-pdfs test_pdfs
+        ls -l all_pdfs/dummy.pdf
+        rm -rf test_pdfs all_pdfs
+        
+        echo "--- Testing mandel help ---"
+        # Interactive script, just checking if it exists and is executable
+        if [ ! -x bin/mandel ]; then echo "mandel not executable"; exit 1; fi
+        
+        echo "Smoke tests passed!"

@@ -2,18 +2,38 @@
 # ------------------------------------------------------------------
 # [Shaurita Hutchins] Install PAL2NAL
 #          This script installs PAL2NAL for 64-bit linux distributions.
+# ------------------------------------------------------------------
 
+set -euo pipefail
+
+INSTALL_DIR="/usr/local/apps"
+PAL2NAL_URL="http://www.bork.embl.de/pal2nal/distribution/pal2nal.v14.tar.gz"
+PAL2NAL_FILE="pal2nal.v14.tar.gz"
+
+# Check permissions
+if [[ ! -w "$INSTALL_DIR" ]] && [[ "$EUID" -ne 0 ]]; then
+   echo "Error: You need write permissions for $INSTALL_DIR. Try running with sudo."
+   exit 1
+fi
+
+if [[ ! -d "$INSTALL_DIR" ]]; then
+    mkdir -p "$INSTALL_DIR"
+fi
+
+# Store current directory to return later if needed
 CWD="$(pwd)"
+
 # Change to install directory
-cd /usr/local/apps
+cd "$INSTALL_DIR"
 
-# Install PAL2NAL using its tar.gz
-# PAL2NAL is a perl script so there is no compilation needed
-wget http://www.bork.embl.de/pal2nal/distribution/pal2nal.v14.tar.gz
-tar xzf pal2nal.v14.tar.gz
-rm pal2nal.v14.tar.gz
-cd $CWD
+echo "Downloading PAL2NAL..."
+wget -c "$PAL2NAL_URL"
 
-# Go back to starting directory
-PWD="$(pwd)"
-echo "PAL2NAL is currently installed in $PWD"
+echo "Extracting PAL2NAL..."
+tar xzf "$PAL2NAL_FILE"
+rm "$PAL2NAL_FILE"
+
+# Go back to starting directory (optional, but good practice if sourced)
+cd "$CWD"
+
+echo "PAL2NAL is currently installed in $INSTALL_DIR"

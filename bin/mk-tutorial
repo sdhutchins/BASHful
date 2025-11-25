@@ -3,17 +3,19 @@
 # [Shaurita D. Hutchins] create-tutorial
 #          This script creates directory structure for tutorial folders.
 #          Usage: create-tutorial <tutorial_name> <language (R or Python)>
-#
+# ------------------------------------------------------------------
+
+set -euo pipefail
 
 # Check if the correct number of arguments is provided
-if [ $# -ne 2 ]; then
-    echo "Usage: $0 <tutorial_name> <language (R or Python)>"
+if [[ $# -ne 2 ]]; then
+    echo "Usage: $(basename "$0") <tutorial_name> <language (R or Python)>"
     exit 1
 fi
 
 # Capture the arguments
-TUTORIAL_NAME=$1
-LANGUAGE=$2
+TUTORIAL_NAME="$1"
+LANGUAGE="$2"
 
 # Create the main tutorial directory
 mkdir -p "$TUTORIAL_NAME"
@@ -25,21 +27,124 @@ cd "$TUTORIAL_NAME" || exit
 mkdir -p data output
 
 # Create .gitkeep files in data and output folders
-touch data/.gitkeep
-touch output/.gitkeep
+touch data/.gitkeep output/.gitkeep
 
 # Create the README.md file with the tutorial name
 echo "# $TUTORIAL_NAME" > README.md
 
 # Create the test file and .gitignore based on the specified language
-if [ "$LANGUAGE" == "Python" ]; then
+if [[ "$LANGUAGE" == "Python" ]]; then
     echo "print('Hello, this is a Python tutorial')" > test.py
-    echo -e "# Byte-compiled / optimized / DLL files\n__pycache__/\n*.py[cod]\n*$py.class\n\n# C extensions\n*.so\n\n# Packages\n*.egg\n*.egg-info/\ndist/\nbuild/\n.eggs/\n\n# Virtual environments\n.env\n.venv\nvenv/\nENV/\n\n# PyInstaller\n*.manifest\n*.spec\n\n# Installer logs\npip-log.txt\npip-delete-this-directory.txt\n\n# Unit test / coverage reports\nhtmlcov/\n.tox/\n.nox/\n.coverage\n.coverage.*\n.cache\nnosetests.xml\ncoverage.xml\n*.cover\n*.py,cover\n\n# Jupyter Notebook\n.ipynb_checkpoints\n\n# pyenv\n.python-version\n\n# mypy\n.mypy_cache/\n.dmypy.json\n.dmypy.log\n" > .gitignore
-    echo -e "\n# Command to create a virtual environment:" >> README.md
-    echo "python -m venv venv" >> README.md
-elif [ "$LANGUAGE" == "R" ]; then
+    
+    # Use heredoc with quoted delimiter 'EOF' to prevent variable expansion
+    cat << 'EOF' > .gitignore
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Packages
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.env
+.venv
+venv/
+ENV/
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# mypy
+.mypy_cache/
+.dmypy.json
+.dmypy.log
+EOF
+
+    {
+        echo ""
+        echo "# Command to create a virtual environment:"
+        echo "python -m venv venv"
+    } >> README.md
+
+elif [[ "$LANGUAGE" == "R" ]]; then
     echo "print('Hello, this is an R tutorial')" > test.R
-    echo -e "# History files\n.Rhistory\n.Rapp.history\n\n# Session Data files\n.RData\n\n# User-specific files\n.Ruserdata\n\n# Example code in package build process\n*-Ex.R\n\n# Output files from R CMD build\n/*.tar.gz\n\n# Output files from R CMD check\n/*.Rcheck/\n\n# RStudio files\n.Rproj.user/\n.Rproj.user\n*.Rproj\n.Rproj\n\n# Produced vignettes\nvignettes/*.html\nvignettes/*.pdf\n\n# OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3\n.httr-oauth\n\n# Knitr and R markdown default cache directories\n*_cache/\n\n# Temporary files created by R markdown\n*.utf8.md\n*.knit.md\n\n# R Environment Variables\nRenviron\n.Renviron\n" > .gitignore
+    
+    cat << 'EOF' > .gitignore
+# History files
+.Rhistory
+.Rapp.history
+
+# Session Data files
+.RData
+
+# User-specific files
+.Ruserdata
+
+# Example code in package build process
+*-Ex.R
+
+# Output files from R CMD build
+/*.tar.gz
+
+# Output files from R CMD check
+/*.Rcheck/
+
+# RStudio files
+.Rproj.user/
+.Rproj.user
+*.Rproj
+.Rproj
+
+# Produced vignettes
+vignettes/*.html
+vignettes/*.pdf
+
+# OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
+.httr-oauth
+
+# Knitr and R markdown default cache directories
+*_cache/
+
+# Temporary files created by R markdown
+*.utf8.md
+*.knit.md
+
+# R Environment Variables
+Renviron
+.Renviron
+EOF
+
 else
     echo "Unsupported language. Please specify 'Python' or 'R'."
     exit 1

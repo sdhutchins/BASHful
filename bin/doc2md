@@ -1,0 +1,39 @@
+#!/bin/bash
+# ------------------------------------------------------------------
+# [Shaurita Hutchins] doc2md
+#           Usage: doc2md <input_ext> [output_ext] [directory]
+#           Example: doc2md pdf md ./docs
+# ------------------------------------------------------------------
+
+set -euo pipefail
+
+# Check arguments
+if [[ $# -lt 1 ]]; then
+    echo "Usage: $(basename "$0") <input_ext> [output_ext=md] [dir=.]"
+    exit 1
+fi
+
+IN_EXT="$1"
+OUT_EXT="${2:-md}"
+TARGET_DIR="${3:-.}"
+
+# Check dependencies
+if ! command -v markitdown &>/dev/null; then
+    echo "Error: markitdown is not installed (pip install markitdown[all])." >&2
+    exit 1
+fi
+
+# Convert files
+echo "Converting .$IN_EXT to .$OUT_EXT in $TARGET_DIR..."
+found=false
+
+while IFS= read -r -d '' file; do
+    found=true
+    OUT_FILE="${file%.*}.$OUT_EXT"
+    echo "$file -> $OUT_FILE"
+    markitdown "$file" -o "$OUT_FILE"
+done < <(find "$TARGET_DIR" -maxdepth 1 -type f -name "*.$IN_EXT" -print0)
+
+if [ "$found" = false ]; then
+    echo "No .$IN_EXT files found in $TARGET_DIR."
+fi

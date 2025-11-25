@@ -2,23 +2,41 @@
 # ------------------------------------------------------------------
 # [Shaurita Hutchins] getuser
 #          This gets the location of the user's home directory and 
-#		   the full name of the user.
-#		   Usage: getuser [$USERNAME]
+#          the full name of the user.
+#          Usage: getuser [USERNAME]
+# ------------------------------------------------------------------
 
-USER="$1"
+set -euo pipefail
 
-if [ "$#" == "0" ]; then
-	echo "Error: You must specify a username (e.g. r2290)"
-	echo
-	echo "Usage: getuser [USERNAME]"
-elif [ ! -d "${DIR}" ]; then
-	if [ "${USER}" == "-h" ]; then
-	    	echo "Usage: getuser [USERNAME]"
-		exit 0
-	else
-      	USERINFO=$(getent passwd | grep $USER);
-      	IFS=: read -r -a array <<< "$USERINFO"; 
-      	echo "Name: ${array[4]}";
-      	echo "Home path: ${array[5]}";
-	fi
-fi 
+# Function to display usage
+usage() {
+    echo "Usage: $(basename "$0") [USERNAME]"
+    echo "Example: $(basename "$0") r2290"
+    exit 1
+}
+
+# Check if an argument is provided
+if [[ $# -eq 0 ]]; then
+    echo "Error: You must specify a username."
+    usage
+fi
+
+USERNAME="$1"
+
+# Handle help flag
+if [[ "$USERNAME" == "-h" || "$USERNAME" == "--help" ]]; then
+    usage
+fi
+
+# Check if the user exists using getent
+if ! getent passwd "$USERNAME" > /dev/null 2>&1; then
+    echo "Error: User '$USERNAME' not found."
+    exit 1
+fi
+
+# Retrieve and display user info
+USERINFO=$(getent passwd "$USERNAME")
+IFS=: read -r -a array <<< "$USERINFO"
+
+echo "Name: ${array[4]}"
+echo "Home path: ${array[5]}"
