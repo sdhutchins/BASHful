@@ -15,7 +15,7 @@ fi
 # This function downloads the scripts from the specified URLs.
 download_scripts() {
     # Base URL for the raw files in the GitHub repository
-    BASE_URL="https://raw.githubusercontent.com/sdhutchins/BASHful/master/bin"
+    BASE_URL="https://raw.githubusercontent.com/sdhutchins/BASHful/main/bin"
     DEST_DIR="$HOME/bin"
 
     echo "Starting download of BASHful scripts to $DEST_DIR..."
